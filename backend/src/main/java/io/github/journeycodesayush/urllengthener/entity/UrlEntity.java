@@ -16,7 +16,7 @@ public class UrlEntity {
 
     @Id
     @Column(nullable = false, unique = true, length = 64)
-    private String hashedUrl;
+    private String hash;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
@@ -29,12 +29,12 @@ public class UrlEntity {
         this.url = url;
     }
 
-    public String getHashedUrl() {
-        return hashedUrl;
+    public String getHash() {
+        return hash;
     }
 
-    public void setHashedUrl(String hashedUrl) {
-        this.hashedUrl = hashedUrl;
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public Instant getCreatedAt() {

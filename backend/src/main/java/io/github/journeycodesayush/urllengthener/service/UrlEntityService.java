@@ -32,7 +32,7 @@ public class UrlEntityService {
 
             UrlEntity urlEntity = new UrlEntity();
             urlEntity.setCreatedAt(Instant.now());
-            urlEntity.setHashedUrl(hashedUrl);
+            urlEntity.setHash(hashedUrl);
             urlEntity.setUrl(urlRequest.getUrl());
 
             return urllengthenerRepository.save(urlEntity);
