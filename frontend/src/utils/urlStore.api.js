@@ -24,7 +24,9 @@ export async function saveUrl(rawUrl) {
       body: JSON.stringify({ url: normalized }),
     });
   } catch (networkErr) {
-    throw new Error('NETWORK_ERROR');
+    throw new Error('NETWORK_ERROR', {
+      cause: networkErr,
+    });
   }
 
   if (!res.ok) {
