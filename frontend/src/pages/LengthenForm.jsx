@@ -15,8 +15,14 @@ export default function LengthenForm() {
       const result = await saveUrl(input);
       setHash(result);
       setCopied(false);
-    } catch {
-      setError('That does not look like a valid url.');
+    } catch (err) {
+      if (err.message === 'NETWORK_ERROR') {
+        setError('Could not reach the server. Is the backend running?');
+      } else if (err.message === 'SERVER_ERROR') {
+        setError('Something went wrong on the server.');
+      } else {
+        setError('That does not look like a valid url.');
+      }
     }
   }
 
