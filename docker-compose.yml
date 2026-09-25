@@ -11,6 +11,7 @@ services:
       context: ./frontend
       args:
         VITE_API_BASE_URL: http://localhost:8080
+        VITE_STORAGE_MODE: api
     ports:
       - "5173:80"
     depends_on:
