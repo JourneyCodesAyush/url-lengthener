@@ -4,11 +4,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import io.github.journeycodesayush.urllengthener.dto.Url;
+import io.github.journeycodesayush.urllengthener.dto.UrlBackup;
 import io.github.journeycodesayush.urllengthener.entity.UrlEntity;
 import io.github.journeycodesayush.urllengthener.repository.UrlEntityRepository;
 
@@ -48,6 +50,25 @@ public class UrlEntityService {
         Optional<UrlEntity> existingUrlEntity = urlEntityRepository.findById(hashedUrl);
 
         return existingUrlEntity.orElse(null);
+    }
+
+    public UrlBackup exportUrlBackup() {
+        List<Url> urls = urlEntityRepository.findAll()
+                .stream()
+                .map((entity) -> {
+                    Url url = new Url();
+                    url.setCreatedAt(entity.getCreatedAt());
+                    url.setUrl(entity.getUrl());
+                    url.setHash(entity.getHash());
+                    return url;
+                })
+                .toList();
+
+        UrlBackup urlBackup = new UrlBackup();
+        urlBackup.setVersion(1);
+        urlBackup.setUrls(urls);
+
+        return urlBackup;
     }
 
     public static String getSha256(String input) throws NoSuchAlgorithmException {
