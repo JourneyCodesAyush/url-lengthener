@@ -99,11 +99,23 @@ export/import paths already nested under it.
 - **Formatter**: Prettier (oxlint doesn't format, so both coexist).
 - **Test runner**: Vitest + React Testing Library.
 - **Router**: react-router-dom.
-- **Tests**: none on the frontend (deliberate — learning focus is Spring
-  Core/Boot, not frontend test coverage). Standing convention for the
-  project: a mirrored `tests/` directory (not colocated `*.test.js` files),
-  matching Spring Boot's own `src/test/java` layout, for consistency once
-  Phase 2 starts.
+- **Backend formatter**: [Spotless](https://github.com/diffplug/spotless)
+  (Maven plugin) with `googleJavaFormat`, pinned to `1.28.0`. Newer versions
+  (tested: 2.48) fail on JDK 25 due to compiler-internals API changes in the
+  formatter itself — not a project bug, a known version-compatibility gap.
+  `./mvnw spotless:check` in CI, `./mvnw spotless:apply` locally.
+- **Test runner (frontend)**: Vitest + React Testing Library.
+- **Tests (frontend)**: utility-layer only — `hash.js`, `normalize.js`, and
+  `urlStore.js`'s localStorage-backed functions (`getUrl`/`saveUrl`/
+  `exportAll`/`importAll` in local mode). No component tests, and no tests
+  against the API-backed storage mode. Deliberate scope limit — learning
+  focus was Spring Core/Boot, not full frontend test coverage.
+- **Tests (backend)**: service-layer tests (JUnit 5 + Mockito) covering
+  idempotency, hash re-derivation on import, createdAt preservation on
+  collision, and version validation.
+- Standing convention for the project: a mirrored `src/test/...` (or
+  `tests/`) tree, not colocated `*.test.js` files — matching Spring Boot's
+  own `src/test/java` layout.
 
 ## Explicitly Deferred
 
