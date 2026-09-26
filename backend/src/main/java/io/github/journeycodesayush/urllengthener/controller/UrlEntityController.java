@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.journeycodesayush.urllengthener.dto.Url;
+import io.github.journeycodesayush.urllengthener.dto.UrlBackup;
 import io.github.journeycodesayush.urllengthener.entity.UrlEntity;
 import io.github.journeycodesayush.urllengthener.service.UrlEntityService;
 
@@ -48,8 +49,17 @@ public class UrlEntityController {
 
         Url url = new Url();
         url.setUrl(urlEntityResponse.getUrl());
+        url.setHash(urlEntityResponse.getHash());
+        url.setCreatedAt(urlEntityResponse.getCreatedAt());
         return ResponseEntity
                 .ok(url);
     }
 
+    @GetMapping("/export")
+    public ResponseEntity<UrlBackup> exportUrl() {
+        UrlBackup urlBackup = urlEntityService.exportUrlBackup();
+
+        return ResponseEntity
+                .ok(urlBackup);
+    }
 }
