@@ -18,15 +18,15 @@ import io.github.journeycodesayush.urllengthener.service.UrlEntityService;
 @CrossOrigin(origins = "http://localhost:5173")
 public class UrlEntityController {
 
-    private UrlEntityService urllengthenerService;
+    private UrlEntityService urlEntityService;
 
-    public UrlEntityController(UrlEntityService urllengthenerService) {
-        this.urllengthenerService = urllengthenerService;
+    public UrlEntityController(UrlEntityService urlEntityService) {
+        this.urlEntityService = urlEntityService;
     }
 
     @PostMapping
     public ResponseEntity<UrlEntity> createUrlEntity(@RequestBody Url urlRequest) {
-        UrlEntity urlEntity = urllengthenerService.createUrlEntity(urlRequest);
+        UrlEntity urlEntity = urlEntityService.createUrlEntity(urlRequest);
 
         if (urlEntity == null) {
             return ResponseEntity
@@ -39,7 +39,7 @@ public class UrlEntityController {
 
     @GetMapping("/{hash}")
     public ResponseEntity<Url> getUrlEntity(@PathVariable String hash) {
-        UrlEntity urlEntityResponse = urllengthenerService.getUrlEntity(hash);
+        UrlEntity urlEntityResponse = urlEntityService.getUrlEntity(hash);
         if (urlEntityResponse == null) {
             return ResponseEntity
                     .notFound()

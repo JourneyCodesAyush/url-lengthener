@@ -15,17 +15,17 @@ import io.github.journeycodesayush.urllengthener.repository.UrlEntityRepository;
 @Service
 public class UrlEntityService {
 
-    private UrlEntityRepository urllengthenerRepository;
+    private UrlEntityRepository urlEntityRepository;
 
-    public UrlEntityService(UrlEntityRepository urllengthenerRepository) {
-        this.urllengthenerRepository = urllengthenerRepository;
+    public UrlEntityService(UrlEntityRepository urlEntityRepository) {
+        this.urlEntityRepository = urlEntityRepository;
     }
 
     public UrlEntity createUrlEntity(Url urlRequest) {
         try {
             String hashedUrl = getSha256(urlRequest.getUrl());
 
-            Optional<UrlEntity> urlEntityOptional = urllengthenerRepository.findById(hashedUrl);
+            Optional<UrlEntity> urlEntityOptional = urlEntityRepository.findById(hashedUrl);
             if (urlEntityOptional.isPresent()) {
                 return urlEntityOptional.get();
             }
@@ -35,7 +35,7 @@ public class UrlEntityService {
             urlEntity.setHash(hashedUrl);
             urlEntity.setUrl(urlRequest.getUrl());
 
-            return urllengthenerRepository.save(urlEntity);
+            return urlEntityRepository.save(urlEntity);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("SHA-256 algorithm should always be available", e);
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class UrlEntityService {
     }
 
     public UrlEntity getUrlEntity(String hashedUrl) {
-        Optional<UrlEntity> existingUrlEntity = urllengthenerRepository.findById(hashedUrl);
+        Optional<UrlEntity> existingUrlEntity = urlEntityRepository.findById(hashedUrl);
 
         return existingUrlEntity.orElse(null);
     }
