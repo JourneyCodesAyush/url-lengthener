@@ -29,6 +29,9 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Check formatting
+        run: mvn spotless:check
+
       - name: Create data directory
         run: mkdir -p data
 
