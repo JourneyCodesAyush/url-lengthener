@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.github.journeycodesayush.urllengthener.dto.Url;
@@ -20,8 +21,12 @@ public class UrlEntityService {
 
     private UrlEntityRepository urlEntityRepository;
 
-    public UrlEntityService(UrlEntityRepository urlEntityRepository) {
+    private int backupVersion;
+
+    public UrlEntityService(UrlEntityRepository urlEntityRepository,
+            @Value("${app.backup.version}") int backupVersion) {
         this.urlEntityRepository = urlEntityRepository;
+        this.backupVersion = backupVersion;
     }
 
     public UrlEntity createUrlEntity(Url urlRequest) {
@@ -66,13 +71,17 @@ public class UrlEntityService {
                 .toList();
 
         UrlBackup urlBackup = new UrlBackup();
-        urlBackup.setVersion(1);
+        urlBackup.setVersion(backupVersion);
         urlBackup.setUrls(urls);
 
         return urlBackup;
     }
 
     public UrlBackup importUrlBackup(UrlBackup urlBackupRequest) {
+        if (urlBackupRequest.getVersion() != backupVersion) {
+            throw new IllegalArgumentException(
+                    "Unsupported backup version: " + urlBackupRequest.getVersion() + ". Expected: " + backupVersion);
+        }
 
         List<Url> imported = new ArrayList<>();
         for (Url url : urlBackupRequest.getUrls()) {
