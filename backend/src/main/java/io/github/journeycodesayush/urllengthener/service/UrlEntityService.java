@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +68,45 @@ public class UrlEntityService {
         UrlBackup urlBackup = new UrlBackup();
         urlBackup.setVersion(1);
         urlBackup.setUrls(urls);
+
+        return urlBackup;
+    }
+
+    public UrlBackup importUrlBackup(UrlBackup urlBackupRequest) {
+
+        List<Url> imported = new ArrayList<>();
+        for (Url url : urlBackupRequest.getUrls()) {
+            try {
+                String hashedUrl = getSha256(url.getUrl());
+
+                Optional<UrlEntity> existing = urlEntityRepository.findById(hashedUrl);
+                UrlEntity urlEntity;
+
+                if (existing.isPresent()) {
+                    urlEntity = existing.get();
+                } else {
+                    urlEntity = new UrlEntity();
+                    urlEntity.setHash(hashedUrl);
+                    urlEntity.setCreatedAt(Instant.now());
+                    urlEntity.setUrl(url.getUrl());
+
+                    urlEntity = urlEntityRepository.save(urlEntity);
+                }
+
+                Url result = new Url();
+                result.setUrl(urlEntity.getUrl());
+                result.setHash(urlEntity.getHash());
+                result.setCreatedAt(urlEntity.getCreatedAt());
+
+                imported.add(result);
+
+            } catch (NoSuchAlgorithmException e) {
+                throw new IllegalStateException("SHA-256 algorithm should always be available", e);
+            }
+        }
+        UrlBackup urlBackup = new UrlBackup();
+        urlBackup.setVersion(urlBackupRequest.getVersion());
+        urlBackup.setUrls(imported);
 
         return urlBackup;
     }
