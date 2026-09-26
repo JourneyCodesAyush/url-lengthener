@@ -62,4 +62,19 @@ public class UrlEntityController {
         return ResponseEntity
                 .ok(urlBackup);
     }
+
+    @PostMapping("/import")
+    public ResponseEntity<UrlBackup> importUrlEntity(@RequestBody UrlBackup urlBackupRequest) {
+        UrlBackup urlBackupResponse = urlEntityService.importUrlBackup(urlBackupRequest);
+
+        if (urlBackupResponse == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+
+        return ResponseEntity
+                .ok(urlBackupResponse);
+    }
+
 }
